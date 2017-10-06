@@ -23,7 +23,7 @@ def main():
             continue
         stats = struct.unpack('66f', data[0:264])
         new_value = "%.14f;%.14f;%d" % \
-                    (stats[Telemetry.IDLE_RPM], stats[Telemetry.MAX_RPM], int(stats[Telemetry.MAX_GEARS]))
+                    (stats[Telemetry.TRACK_LENGTH], stats[Telemetry.Z_POSITION], int(stats[Telemetry.TOTAL_LAPS]))
         if new_value != value:
             value = new_value
             print(index, value)
