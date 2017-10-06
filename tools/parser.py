@@ -1,12 +1,13 @@
-import socket
-import struct
 import asyncore
 import os
-import threading
+import socket
 import sqlite3
+import struct
+import threading
 from datetime import datetime
+
 from telemetry import Telemetry
-from tools.debug import Debug
+from debug import Debug, LogLevel
 
 UDP_IP = "127.0.0.1"
 UDP_PORT = 20777
@@ -24,11 +25,18 @@ class Parser(asyncore.dispatcher):
         self.previous_track = None
         self.track = None
         self.last_update = None
+        self.log_level = LogLevel.error
 
     @staticmethod
     def convert_time(time_s):
         time_ms = int(time_s * 1000)
         return int(time_ms / 60000), int((time_ms % 60000) / 1000), int((time_ms % 6000) % 1000)
+
+    def enable_parser_debug(self, log_level=LogLevel.verbose):
+        self.log_level = LogLevel(log_level)
+        Debug.set_log_level(self.log_level)
+        Debug.toggle(True)
+        Debug.notice('Parser debug mode set to %s' % self.log_level.name)
 
     def open_socket(self):
         if self.socket and self.connected:
@@ -73,10 +81,11 @@ class Parser(asyncore.dispatcher):
         #     return
         try:
             app_root = os.path.dirname(os.path.realpath(__file__))
-            conn = sqlite3.connect(app_root + '/data/' + self.game['db_file'])
+            conn = sqlite3.connect(app_root + '/../data/' + self.game['db_file'])
             db = conn.cursor()
         except sqlite3.Error as e:
-            Debug.err("Database connection error {}" % e)
+            Debug.err("Database connection error")
+            Debug.err(e)
             return
         db.execute('SELECT id,name, start_z FROM Tracks WHERE abs(length - ?) <0.000000001', (track_length,))
         res = db.fetchall()
@@ -106,10 +115,11 @@ class Parser(asyncore.dispatcher):
         #     return
         try:
             app_root = os.path.dirname(os.path.realpath(__file__))
-            conn = sqlite3.connect(app_root + '/data/' + self.game['db_file'])
+            conn = sqlite3.connect(app_root + '/../data/' + self.game['db_file'])
             db = conn.cursor()
         except sqlite3.Error as e:
-            Debug.err("Database connection error {}" % e)
+            Debug.err("Database connection error")
+            Debug.err(e)
             return
         db.execute('SELECT id, name FROM cars WHERE idle_rpm = ? AND max_rpm = ? AND gears = ?',
                    (idle_rpm, max_rpm, gears))

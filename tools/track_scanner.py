@@ -1,7 +1,7 @@
 import signal
-import sys
 import socket
 import struct
+import sys
 
 from debug import Debug
 from telemetry import Telemetry

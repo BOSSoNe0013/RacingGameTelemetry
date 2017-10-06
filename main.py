@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-import parser
-import sys
-import signal
 import argparse
+import signal
+import sys
+
 from qtpy import QtWidgets, uic, QtGui, QtCore
 
+from tools import parser
+from tools.games import Games
 from tools.debug import Debug
 from tools.debug import LogLevel
-from games import Games
-from telemetry import Telemetry
+from tools.telemetry import Telemetry
 
 DEBUG = False
 
@@ -82,6 +83,8 @@ def main():
     m_window.progressBar.setStyleSheet(style)
     m_window.show()
     m_parser = parser.Parser(Listener(update_ui, update_connection_status), Games.DIRT_RALLY)
+    if DEBUG is True:
+        m_parser.enable_parser_debug(flags.log_level)
     sys.exit(app.exec_())
 
 
