@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import parser
 import sys
-import os
 import signal
 import argparse
 from qtpy import QtWidgets, uic, QtGui, QtCore
@@ -74,10 +73,9 @@ class Listener:
 
 def main():
     global m_parser, m_window, style_low
-    app_root = os.path.dirname(os.path.realpath(__file__))
     app = QtWidgets.QApplication(sys.argv)
     app.quitOnLastWindowClosed()
-    m_window = setup_ui(app_root + "/main.ui")
+    m_window = setup_ui("main.ui")
     m_window.setWindowTitle('Racing Telemetry [%s]' % Games.DIRT_RALLY['name'])
     m_window.rpmChanged.connect(m_window.progressBar.setValue)
     style = style_low
@@ -104,7 +102,13 @@ def stop():
 
 
 def setup_ui(ui_file):
-    ui = uic.loadUi(ui_file, MainWindow())
+    if getattr(sys, 'frozen', False):
+        # noinspection PyUnresolvedReferences,PyProtectedMember
+        ui_file = sys._MEIPASS + '/' + ui_file
+    file = QtCore.QFile(ui_file)
+    file.open(QtCore.QFile.ReadOnly)
+    ui = uic.loadUi(file, MainWindow())
+    file.close()
     return ui
 
 

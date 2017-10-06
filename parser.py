@@ -100,7 +100,7 @@ class Parser(asyncore.dispatcher):
         else:
             self.track = None
 
-    def find_car(self, max_rpm, start_rpm):
+    def find_car(self, idle_rpm, max_rpm, gears):
         # print('Find car', max_rpm, start_rpm)
         # if self.game['db_file'] is None:
         #     return
@@ -111,8 +111,8 @@ class Parser(asyncore.dispatcher):
         except sqlite3.Error as e:
             Debug.err("Database connection error {}" % e)
             return
-        db.execute('SELECT id, name FROM cars WHERE abs(max_rpm - ?) < 0.00000001 AND abs(start_rpm - ?) < 2',
-                   (max_rpm, start_rpm))
+        db.execute('SELECT id, name FROM cars WHERE idle_rpm = ? AND max_rpm = ? AND gears = ?',
+                   (idle_rpm, max_rpm, gears))
         res = db.fetchall()
         if len(res) == 1:
             (index, name) = res[0]
@@ -151,7 +151,7 @@ class Parser(asyncore.dispatcher):
                 self.car = None
                 self.track = None
         self.last_update = datetime.now()
-        stats = struct.unpack('65f', data[0:256])
+        stats = struct.unpack('66f', data[0:264])
         distance = stats[Telemetry.LAP_DISTANCE] / 1000
         speed = int(stats[Telemetry.SPEED_MPS] * Telemetry.MPS_KMH_RATE)
         if speed > self.max_speed:
@@ -175,7 +175,7 @@ class Parser(asyncore.dispatcher):
             if self.track is None:
                 self.find_track(stats[Telemetry.TRACK_LENGTH], stats[Telemetry.Z_POSITION])
             if self.car is None:
-                self.find_car(stats[Telemetry.MAX_RPM], stats[Telemetry.ENGINE_RPM])
+                self.find_car(stats[Telemetry.IDLE_RPM], stats[Telemetry.MAX_RPM], max_gears)
 
         output = {
             'time': race_time,

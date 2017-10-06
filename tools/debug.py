@@ -82,7 +82,7 @@ class Debug:
             print('%sNOTICE: %s%s' % (TextBlock.WARNING, msg, TextBlock.END_C))
 
     @staticmethod
-    def log(msg, tag):
+    def log(msg, tag=None):
         if DEBUG and LEVEL >= LogLevel.verbose:
             if tag is None:
                 print(msg)
