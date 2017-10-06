@@ -3,7 +3,7 @@ import socket
 import struct
 import sys
 
-from debug import Debug
+from debug import Debug, LogLevel
 from telemetry import Telemetry
 
 UDP_IP = "127.0.0.1"
@@ -16,6 +16,8 @@ sock.bind((UDP_IP, UDP_PORT))
 def main():
     index = 1
     value = None
+    Debug.set_log_level(LogLevel(2))
+    Debug.toggle(True)
 
     while True:
         data, address = sock.recvfrom(512)
@@ -26,7 +28,7 @@ def main():
                     (stats[Telemetry.IDLE_RPM], stats[Telemetry.MAX_RPM], int(stats[Telemetry.MAX_GEARS]))
         if new_value != value:
             value = new_value
-            print(index, value)
+            Debug.log(value, '%d' % index)
             index += 1
 
 

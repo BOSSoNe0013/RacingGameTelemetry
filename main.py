@@ -7,8 +7,7 @@ from qtpy import QtWidgets, uic, QtGui, QtCore
 
 from tools import parser
 from tools.games import Games
-from tools.debug import Debug
-from tools.debug import LogLevel
+from tools.debug import Debug, LogLevel
 from tools.telemetry import Telemetry
 
 DEBUG = False
