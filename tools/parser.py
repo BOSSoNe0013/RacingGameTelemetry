@@ -6,8 +6,8 @@ import struct
 import threading
 from datetime import datetime
 
-from telemetry import Telemetry
-from debug import Debug, LogLevel
+from .telemetry import Telemetry
+from .debug import Debug, LogLevel
 
 UDP_IP = "127.0.0.1"
 UDP_PORT = 20777
@@ -77,8 +77,8 @@ class Parser(asyncore.dispatcher):
 
     def find_track(self, track_length, z_pos):
         # print('Find track', track_length, z_pos)
-        # if self.game['db_file'] is None:
-        #     return
+        if self.game['db_file'] is None:
+            return
         try:
             app_root = os.path.dirname(os.path.realpath(__file__))
             conn = sqlite3.connect(app_root + '/../data/' + self.game['db_file'])
@@ -111,8 +111,8 @@ class Parser(asyncore.dispatcher):
 
     def find_car(self, idle_rpm, max_rpm, gears):
         # print('Find car', max_rpm, start_rpm)
-        # if self.game['db_file'] is None:
-        #     return
+        if self.game['db_file'] is None:
+            return
         try:
             app_root = os.path.dirname(os.path.realpath(__file__))
             conn = sqlite3.connect(app_root + '/../data/' + self.game['db_file'])
