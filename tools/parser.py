@@ -9,17 +9,33 @@ from datetime import datetime
 from .telemetry import Telemetry
 from .debug import Debug, LogLevel
 
-UDP_IP = "127.0.0.1"
-UDP_PORT = 20777
+
+class ParserListener:
+    def __init__(self, data_callback=None, connection_callback=None):
+        self.data_callback = data_callback
+        self.connection_callback = connection_callback
+
+    def data_received(self, data):
+        if not self.data_callback:
+            return
+        self.data_callback(data)
+
+    def connection_status_changed(self, status):
+        if not self.connection_callback:
+            return
+        self.connection_callback(status)
 
 
 class Parser(asyncore.dispatcher):
+    UDP_IP = "127.0.0.1"
+    UDP_PORT = 20777
+
     def __init__(self, listener, game):
         asyncore.dispatcher.__init__(self)
         self.game = game
         self.listener = listener
         self.max_speed = 0
-        self.address = (UDP_IP, UDP_PORT)
+        self.address = (self.UDP_IP, self.UDP_PORT)
         self.car = None
         self.previous_car = None
         self.previous_track = None
@@ -60,8 +76,8 @@ class Parser(asyncore.dispatcher):
             self.listener.connection_callback(True)
 
     def handle_read(self):
-        data = self.recv(512)
-        if not data or len(data) <= 256:
+        data = self.recv(264)
+        if not data or len(data) < 264:
             return
         self.parse(data)
 
@@ -108,6 +124,8 @@ class Parser(asyncore.dispatcher):
                     break
         else:
             self.track = None
+        db.close()
+        conn.close()
 
     def find_car(self, idle_rpm, max_rpm, gears):
         # print('Find car', max_rpm, start_rpm)
@@ -151,6 +169,7 @@ class Parser(asyncore.dispatcher):
             else:
                 self.car = self.previous_car
         db.close()
+        conn.close()
 
     def parse(self, data):
         if self.last_update is not None:

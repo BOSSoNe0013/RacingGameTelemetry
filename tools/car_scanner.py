@@ -3,6 +3,8 @@ import socket
 import struct
 import sys
 
+from datetime import datetime
+
 from debug import Debug, LogLevel
 from telemetry import Telemetry
 
@@ -16,12 +18,24 @@ sock.bind((UDP_IP, UDP_PORT))
 def main():
     index = 1
     value = None
+    last_update = datetime.now()
+    found = False
     Debug.set_log_level(LogLevel(2))
     Debug.toggle(True)
+    Debug.head("Car Scanner")
+    Debug.log('Idle RPM | Max RPM | Max Gears')
 
     while True:
+        if last_update is not None:
+            delta = datetime.now() - last_update
+            if delta.seconds >= 30:
+                Debug.notice('New track')
+                found = False
+        last_update = datetime.now()
         data, address = sock.recvfrom(512)
         if not data:
+            continue
+        if found:
             continue
         stats = struct.unpack('66f', data[0:264])
         new_value = "%.14f;%.14f;%d" % \
@@ -30,6 +44,7 @@ def main():
             value = new_value
             Debug.log(value, '%d' % index)
             index += 1
+            found = True
 
 
 # noinspection PyUnusedLocal

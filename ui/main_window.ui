@@ -454,8 +454,7 @@
   </property>
   <property name="windowIcon">
    <iconset theme="chronometer">
-    <normaloff/>
-   </iconset>
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <property name="autoFillBackground">
    <bool>true</bool>
@@ -2837,10 +2836,10 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>23</height>
+     <height>27</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuFile">
+   <widget class="QMenu" name="menu_file">
     <property name="title">
      <string>&amp;File</string>
     </property>
@@ -2848,7 +2847,21 @@
     <addaction name="separator"/>
     <addaction name="menu_action_quit"/>
    </widget>
-   <addaction name="menuFile"/>
+   <widget class="QMenu" name="menu_settings">
+    <property name="title">
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="menu_action_Preferences"/>
+   </widget>
+   <widget class="QMenu" name="menu_help">
+    <property name="title">
+     <string>&amp;help</string>
+    </property>
+    <addaction name="action_About_Racing_Telemetry"/>
+   </widget>
+   <addaction name="menu_file"/>
+   <addaction name="menu_settings"/>
+   <addaction name="menu_help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -2870,12 +2883,14 @@
    <property name="text">
     <string>&amp;Quit</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Q</string>
+   </property>
   </action>
   <action name="action_Connect">
    <property name="icon">
     <iconset theme="online">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Connect</string>
@@ -2884,6 +2899,27 @@
   <action name="menu_action_connect">
    <property name="text">
     <string>&amp;Connect</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
+  </action>
+  <action name="menu_action_Preferences">
+   <property name="text">
+    <string>&amp;Preferences</string>
+   </property>
+   <property name="shortcut">
+    <string>F2</string>
+   </property>
+  </action>
+  <action name="action_About_Racing_Telemetry">
+   <property name="text">
+    <string>&amp;About Racing Telemetry</string>
+   </property>
+  </action>
+  <action name="action_Game">
+   <property name="text">
+    <string>&amp;Game</string>
    </property>
   </action>
  </widget>
@@ -2937,9 +2973,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>menu_action_Preferences</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>show_preferences()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>rpmChanged(int)</signal>
   <slot>toggle_connection()</slot>
+  <slot>show_preferences()</slot>
  </slots>
 </ui>

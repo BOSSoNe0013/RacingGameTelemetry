@@ -1,5 +1,5 @@
 # noinspection SpellCheckingInspection
-class Games:
+class Games(object):
     DIRT_RALLY = {
         'name': 'Dirt Rally',
         'db_file': 'dirt_rally.db'
@@ -28,3 +28,15 @@ class Games:
         'name': 'GRID Autosport',
         'db_file': None
     }
+    all_games = [
+        DIRT_RALLY,
+        DIRT_4,
+        DIRT_SHOWDOWN,
+        F1_2015,
+        F1_2016,
+        F1_2017,
+        GRID_AUTOSPORT
+    ]
+
+    def __iter__(self):
+        return iter(self.all_games)
