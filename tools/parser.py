@@ -61,13 +61,17 @@ class Parser(asyncore.dispatcher):
     def open_socket(self):
         if self.socket and self.connected:
             return
-        self.create_socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.bind(self.address)
-        thread = threading.Thread(target=asyncore.loop, kwargs={'timeout': 1})
-        thread.start()
-        if self.listener.connection_callback:
-            self.listener.connection_callback(True)
-        Debug.notice("Waiting for data on %s:%s" % self.address)
+        try:
+            self.create_socket(socket.AF_INET, socket.SOCK_DGRAM)
+            self.bind(self.address)
+            thread = threading.Thread(target=asyncore.loop, kwargs={'timeout': 1})
+            thread.start()
+            if self.listener.connection_callback:
+                self.listener.connection_callback(True)
+            Debug.notice("Waiting for data on %s:%s" % self.address)
+        except Exception as e:
+            Debug.warn(e)
+            self.close_socket()
 
     def close_socket(self):
         self.close()

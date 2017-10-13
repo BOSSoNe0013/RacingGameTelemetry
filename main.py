@@ -66,9 +66,13 @@ class MainApp(MainWindow.Listener):
         self.m_window = MainWindow.init_from_ui(self)
         self.load_preferences()
 
-        self.m_window.clutch_label.setPixmap(QtGui.QPixmap('res/images/clutch.png'))
-        self.m_window.brake_label.setPixmap(QtGui.QPixmap('res/images/brake.png'))
-        self.m_window.throttle_label.setPixmap(QtGui.QPixmap('res/images/throttle.png'))
+        prefix_path = ''
+        if getattr(sys, 'frozen', False):
+            # noinspection PyUnresolvedReferences,PyProtectedMember
+            prefix_path = sys._MEIPASS + '/'
+        self.m_window.clutch_label.setPixmap(QtGui.QPixmap(prefix_path + 'res/images/clutch.png'))
+        self.m_window.brake_label.setPixmap(QtGui.QPixmap(prefix_path + 'res/images/brake.png'))
+        self.m_window.throttle_label.setPixmap(QtGui.QPixmap(prefix_path + 'res/images/throttle.png'))
 
         self.fill_games_menu()
         self.clear_ui()
@@ -114,7 +118,7 @@ class MainApp(MainWindow.Listener):
         if status:
             pedal_effect.setStrength(1.0)
         else:
-            pedal_effect.setStrength(1.0)
+            pedal_effect.setStrength(0.0)
 
     def start(self):
         if self.m_connected:

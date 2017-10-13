@@ -1,6 +1,8 @@
 import sys
 from qtpy import QtWidgets, uic, QtCore
 
+from tools.parser import Parser
+
 
 class PreferencesWindow(QtWidgets.QDialog):
     def __init__(self, parent=None):
@@ -23,7 +25,6 @@ class PreferencesWindow(QtWidgets.QDialog):
         return preferences_window
 
     def change_preferences_panel(self):
-        selected_item = None
         selected_items = self.treeWidget.selectedItems()
         if len(selected_items) > 0:
             selected_item = selected_items[0]
@@ -33,7 +34,10 @@ class PreferencesWindow(QtWidgets.QDialog):
     def on_preferences_updated(self):
         if not self.loaded:
             return
-        self.m_settings.setValue('udp_host', self.udp_host.text())
+        udp_host = self.udp_host.text()
+        if udp_host == '':
+            udp_host = Parser.UDP_IP
+        self.m_settings.setValue('udp_host', udp_host)
         self.m_settings.setValue('udp_port', self.udp_port.value())
         self.m_settings.setValue('game', self.gamesComboBox.currentData())
         self.m_settings.setValue('autostart', self.autostart.isChecked())
