@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="images">
+    <file>images/brake.png</file>
+    <file>images/throttle.png</file>
+    <file>images/clutch.png</file>
+  </qresource>
+</RCC>

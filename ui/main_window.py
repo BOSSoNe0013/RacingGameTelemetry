@@ -20,13 +20,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.listener = parent
 
     def closeEvent(self, *args, **kwargs):
-        self.listener.on_close()
+        if self.listener is not None:
+            self.listener.on_close()
 
     def toggle_connection(self):
-        self.listener.on_toggle_connection()
+        if self.listener is not None:
+            self.listener.on_toggle_connection()
 
     def show_preferences(self):
-        self.listener.show_preferences()
+        if self.listener is not None:
+            self.listener.show_preferences()
 
     @staticmethod
     def init_from_ui(parent):

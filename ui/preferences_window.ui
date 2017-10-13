@@ -45,6 +45,12 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <widget class="QWidget" name="widget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="minimumSize">
        <size>
         <width>128</width>
@@ -111,7 +117,7 @@
             <normaloff>.</normaloff>.</iconset>
           </property>
           <property name="flags">
-           <set>ItemIsSelectable</set>
+           <set>ItemIsSelectable|ItemIsEnabled</set>
           </property>
          </item>
         </widget>
@@ -127,18 +133,18 @@
       </property>
       <property name="minimumSize">
        <size>
-        <width>360</width>
+        <width>512</width>
         <height>0</height>
        </size>
       </property>
       <property name="baseSize">
        <size>
-        <width>360</width>
+        <width>512</width>
         <height>0</height>
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="general_preferences">
        <property name="sizePolicy">
@@ -200,12 +206,12 @@
                 <string>Port:</string>
                </property>
                <property name="buddy">
-                <cstring>spinBox_2</cstring>
+                <cstring>udp_port</cstring>
                </property>
               </widget>
              </item>
              <item row="3" column="1">
-              <widget class="QSpinBox" name="spinBox_2">
+              <widget class="QSpinBox" name="udp_port">
                <property name="minimum">
                 <number>10000</number>
                </property>
@@ -218,7 +224,7 @@
               </widget>
              </item>
              <item row="2" column="1">
-              <widget class="QLineEdit" name="lineEdit">
+              <widget class="QLineEdit" name="udp_host">
                <property name="placeholderText">
                 <string>127.0.0.1</string>
                </property>
@@ -320,18 +326,18 @@
              <item row="2" column="0">
               <widget class="QLabel" name="startServiceAtApplicationLaunchLabel">
                <property name="text">
-                <string>Start ser&amp;vice at application launch</string>
+                <string>S&amp;tart service at application launch</string>
                </property>
                <property name="wordWrap">
                 <bool>false</bool>
                </property>
                <property name="buddy">
-                <cstring>startServiceAtApplicationLaunchCheckBox</cstring>
+                <cstring>autostart</cstring>
                </property>
               </widget>
              </item>
              <item row="2" column="1">
-              <widget class="QCheckBox" name="startServiceAtApplicationLaunchCheckBox"/>
+              <widget class="QCheckBox" name="autostart"/>
              </item>
             </layout>
            </item>
@@ -399,7 +405,10 @@
               </size>
              </property>
              <property name="text">
-              <string>TextLabel</string>
+              <string>Arduino</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>
@@ -417,43 +426,59 @@
              <item row="1" column="0">
               <widget class="QLabel" name="label_10">
                <property name="text">
-                <string>Address:</string>
+                <string>COM port:</string>
                </property>
               </widget>
              </item>
              <item row="2" column="0">
               <widget class="QLabel" name="label_11">
                <property name="text">
-                <string>Port:</string>
+                <string>&amp;Baud rate:</string>
                </property>
                <property name="buddy">
-                <cstring>spinBox_3</cstring>
+                <cstring>arduino_baud_rate</cstring>
                </property>
               </widget>
              </item>
              <item row="2" column="1">
-              <widget class="QSpinBox" name="spinBox_3"/>
+              <widget class="QSpinBox" name="arduino_baud_rate">
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+               <property name="minimum">
+                <number>300</number>
+               </property>
+               <property name="maximum">
+                <number>250000</number>
+               </property>
+               <property name="singleStep">
+                <number>100</number>
+               </property>
+               <property name="value">
+                <number>115200</number>
+               </property>
+              </widget>
              </item>
              <item row="3" column="0">
               <widget class="QLabel" name="autoStartArduinoLabel">
                <property name="text">
-                <string>Start Arduino serialCommunication &amp;with telemetry server</string>
+                <string>Start Arduino serialCommunication with &amp;telemetry server</string>
                </property>
                <property name="wordWrap">
                 <bool>true</bool>
                </property>
                <property name="buddy">
-                <cstring>autoStartArduinoCheckBox</cstring>
+                <cstring>arduino_autostart</cstring>
                </property>
               </widget>
              </item>
              <item row="3" column="1">
-              <widget class="QCheckBox" name="autoStartArduinoCheckBox"/>
+              <widget class="QCheckBox" name="arduino_autostart"/>
              </item>
              <item row="1" column="1">
-              <widget class="QLineEdit" name="lineEdit_2">
+              <widget class="QLineEdit" name="arduino_com_port">
                <property name="placeholderText">
-                <string>127.0.0.1</string>
+                <string>/dev/ttyACM0</string>
                </property>
               </widget>
              </item>
@@ -487,8 +512,121 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>udp_host</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>preferences</receiver>
+   <slot>on_preferences_updated()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>463</x>
+     <y>64</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>200</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>udp_port</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>preferences</receiver>
+   <slot>on_preferences_updated()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>463</x>
+     <y>91</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>200</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>gamesComboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>preferences</receiver>
+   <slot>on_preferences_updated()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>524</x>
+     <y>249</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>200</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>autostart</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>preferences</receiver>
+   <slot>on_preferences_updated()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>524</x>
+     <y>271</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>200</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>arduino_com_port</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>preferences</receiver>
+   <slot>on_preferences_updated()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>538</x>
+     <y>60</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>200</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>arduino_baud_rate</sender>
+   <signal>valueChanged(QString)</signal>
+   <receiver>preferences</receiver>
+   <slot>on_preferences_updated()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>538</x>
+     <y>87</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>200</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>arduino_autostart</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>preferences</receiver>
+   <slot>on_preferences_updated()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>538</x>
+     <y>109</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>350</x>
+     <y>200</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>change_preferences_panel()</slot>
+  <slot>on_preferences_updated()</slot>
  </slots>
 </ui>

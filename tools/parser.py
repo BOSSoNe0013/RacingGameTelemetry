@@ -30,11 +30,15 @@ class Parser(asyncore.dispatcher):
     UDP_IP = "127.0.0.1"
     UDP_PORT = 20777
 
-    def __init__(self, listener, game):
+    def __init__(self, listener, game, address=None, port=None):
         asyncore.dispatcher.__init__(self)
         self.game = game
         self.listener = listener
         self.max_speed = 0
+        if address is not None:
+            self.UDP_IP = address
+        if port is not None:
+            self.UDP_PORT = port
         self.address = (self.UDP_IP, self.UDP_PORT)
         self.car = None
         self.previous_car = None

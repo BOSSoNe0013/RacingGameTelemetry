@@ -49,20 +49,72 @@ class MainApp(MainWindow.Listener):
                    "stop: 0.4375 #FFFF00, stop: 0.625 #FF3410, stop: 1 #0000FF); border: .px solid #FF3410;}"
 
     def __init__(self):
+        self.m_settings = None
         self.m_parser = None
         self.m_window = None
         self.m_connected = False
+        self.m_autostart = False
+        self.clutch_pedal_effect = None
+        self.brake_pedal_effect = None
+        self.throttle_pedal_effect = None
+        self.m_udp_host = Parser.UDP_IP
+        self.m_udp_port = Parser.UDP_PORT
         self.m_game = Games.DIRT_RALLY
+
         qt_app = QtWidgets.QApplication(sys.argv)
         qt_app.quitOnLastWindowClosed()
         self.m_window = MainWindow.init_from_ui(self)
+        self.load_preferences()
+
+        self.m_window.clutch_label.setPixmap(QtGui.QPixmap('res/images/clutch.png'))
+        self.m_window.brake_label.setPixmap(QtGui.QPixmap('res/images/brake.png'))
+        self.m_window.throttle_label.setPixmap(QtGui.QPixmap('res/images/throttle.png'))
+
         self.fill_games_menu()
         self.clear_ui()
         self.m_window.show()
-        self.m_parser = Parser(ParserListener(self.update_ui, self.update_connection_status), self.m_game)
         if DEBUG is True:
             self.m_parser.enable_parser_debug(flags.log_level)
+        if self.m_autostart is True:
+            self.start()
         sys.exit(qt_app.exec_())
+
+    def create_pedal_effects(self):
+        foreground = self.m_window.palette().windowText().color()
+
+        self.clutch_pedal_effect = QtWidgets.QGraphicsColorizeEffect()
+        self.clutch_pedal_effect.setStrength(0)
+        self.clutch_pedal_effect.setColor(foreground)
+
+        self.brake_pedal_effect = QtWidgets.QGraphicsColorizeEffect()
+        self.brake_pedal_effect.setStrength(0)
+        self.brake_pedal_effect.setColor(foreground)
+
+        self.throttle_pedal_effect = QtWidgets.QGraphicsColorizeEffect()
+        self.throttle_pedal_effect.setStrength(0)
+        self.throttle_pedal_effect.setColor(foreground)
+
+        self.m_window.clutch_label.setGraphicsEffect(self.clutch_pedal_effect)
+        self.m_window.brake_label.setGraphicsEffect(self.brake_pedal_effect)
+        self.m_window.throttle_label.setGraphicsEffect(self.throttle_pedal_effect)
+
+    def toggle_clutch_state(self, status):
+        self.toggle_label_tint(self.clutch_pedal_effect, status)
+
+    def toggle_brake_state(self, status):
+        self.toggle_label_tint(self.brake_pedal_effect, status)
+
+    def toggle_throttle_state(self, status):
+        self.toggle_label_tint(self.throttle_pedal_effect, status)
+        
+    @staticmethod
+    def toggle_label_tint(pedal_effect, status):
+        if pedal_effect is None:
+            return
+        if status:
+            pedal_effect.setStrength(1.0)
+        else:
+            pedal_effect.setStrength(1.0)
 
     def start(self):
         if self.m_connected:
@@ -75,6 +127,7 @@ class MainApp(MainWindow.Listener):
             return
         Debug.notice('Closing UDP socket')
         self.m_parser.close_socket()
+        self.clear_ui()
 
     def on_close(self):
         Debug.notice('Main window closed')
@@ -94,7 +147,7 @@ class MainApp(MainWindow.Listener):
             act.setCheckable(True)
             act.setData(game)
             games_menu.addAction(act)
-            if game is self.m_game:
+            if game == self.m_game:
                 Debug.notice('Current game: %s' % self.m_game['name'])
                 act.setChecked(True)
         games_group.triggered.connect(self.game_changed)
@@ -120,6 +173,9 @@ class MainApp(MainWindow.Listener):
         self.m_window.distance_view.display(0)
         self.m_window.car_view.setText('Unknown')
         self.m_window.track_view.setText('Unknown')
+        self.toggle_brake_state(False)
+        self.toggle_clutch_state(False)
+        self.toggle_throttle_state(False)
 
     def update_ui(self, data):
         gear = "%d" % data['gear']
@@ -128,6 +184,9 @@ class MainApp(MainWindow.Listener):
         elif data['gear'] == Telemetry.GEAR_REVERSE:
             gear = "R"
         self.m_window.gear_view.setText(gear)
+        self.toggle_brake_state(data['brake'] > 0.0)
+        self.toggle_clutch_state(data['clutch'] > 0.0)
+        self.toggle_throttle_state(data['throttle'] > 0.0)
         self.m_window.speed_view.setText("%d" % data['speed'])
         self.m_window.track_length_view.display(data['track_length'])
         self.m_window.distance_view.display(data['distance'])
@@ -159,7 +218,8 @@ class MainApp(MainWindow.Listener):
             self.m_window.action_Connect.setIconText("Dis&connect")
             self.m_window.action_Connect.setToolTip("Disconnect")
             self.m_window.action_Connect.setIcon(QtGui.QIcon.fromTheme("offline"))
-            self.m_window.statusbar.showMessage("Listening for data on %s:%d " % (Parser.UDP_IP, Parser.UDP_PORT))
+            self.m_window.statusbar\
+                .showMessage("Listening for data on %s:%d " % (self.m_parser.UDP_IP, self.m_parser.UDP_PORT))
         else:
             Debug.notice("Socket closed")
             self.m_window.menu_action_connect.setText("&Connect")
@@ -170,9 +230,26 @@ class MainApp(MainWindow.Listener):
 
     def show_preferences(self):
         preferences_window = PreferencesWindow.init_from_ui(self.m_window)
-        for game in Games():
-            preferences_window.gamesComboBox.addItem(game['name'], game)
+        current_game = self.m_settings.value('game', Games.DIRT_RALLY, dict)
+        preferences_window.fill_games_list(Games(), current_game)
+        preferences_window.finished.connect(self.load_preferences)
         preferences_window.show()
+
+    def load_preferences(self):
+        self.m_settings = QtCore.QSettings('The B1 Project', 'Racing Game Telemetry', self.m_window)
+        self.create_pedal_effects()
+        self.stop()
+        self.m_game = self.m_settings.value('game', Games.DIRT_RALLY, dict)
+        self.m_udp_host = self.m_settings.value('udp_host', Parser.UDP_IP, str)
+        self.m_udp_port = self.m_settings.value('udp_port', Parser.UDP_PORT, int)
+        self.m_autostart = self.m_settings.value('autostart', False, bool)
+        self.m_parser = Parser(
+            ParserListener(self.update_ui, self.update_connection_status),
+            self.m_game,
+            self.m_udp_host,
+            self.m_udp_port
+        )
+        self.clear_ui()
 
 
 if __name__ == '__main__':
