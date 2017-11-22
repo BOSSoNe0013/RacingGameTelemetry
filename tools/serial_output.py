@@ -230,9 +230,12 @@ class ArduiDash:
         self.send(cmd.encode("utf-8"))
 
     def send(self, cmd):
-        if self.serial.is_open and cmd != self.previous_cmd:
-            self.serial.write(0x03)
-            Debug.log(cmd, "TTY Write")
-            self.serial.write(cmd)
-            self.serial.write(b'\n')
-            self.previous_cmd = cmd
+        try:
+            if self.serial.is_open and cmd != self.previous_cmd:
+                self.serial.write(0x03)
+                Debug.log(cmd, "TTY Write")
+                self.serial.write(cmd)
+                self.serial.write(b'\n')
+                self.previous_cmd = cmd
+        except TypeError as e:
+            Debug.warn(e)
