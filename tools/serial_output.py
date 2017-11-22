@@ -119,8 +119,11 @@ class ArduiDash:
 
     def stop(self):
         self.should_read = False
-        if self.serial.is_open:
-            self.serial.close()
+        try:
+            if self.serial.is_open:
+                self.serial.close()
+        except AttributeError:
+            Debug.notice("Serial communication was not opened")
 
     def read(self):
         while self.should_read:

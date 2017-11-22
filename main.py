@@ -287,7 +287,10 @@ class MainApp(MainWindow.Listener):
         self.m_settings = QtCore.QSettings('The B1 Project', 'Racing Game Telemetry', self.m_window)
         self.create_pedal_effects()
         self.stop()
-        self.m_game = self.m_settings.value('game', Games.DIRT_RALLY, dict)
+        try:
+            self.m_game = self.m_settings.value('game', Games.DIRT_RALLY, dict)
+        except TypeError:
+            self.m_game = Games.DIRT_RALLY
         self.m_udp_host = self.m_settings.value('udp_host', Parser.UDP_IP, str)
         self.m_udp_port = self.m_settings.value('udp_port', Parser.UDP_PORT, int)
         self.m_auto_start = self.m_settings.value('autostart', False, bool)
