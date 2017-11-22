@@ -49,7 +49,10 @@ class PreferencesWindow(QtWidgets.QDialog):
     def load_preferences(self):
         self.udp_host.setText(self.m_settings.value('udp_host', '', str))
         self.udp_port.setValue(self.m_settings.value('udp_port', 20777, int))
-        game = self.m_settings.value('game', None, dict)
+        try:
+            game = self.m_settings.value('game', None, dict)
+        except TypeError:
+            game = None
         index = 0
         if game is not None:
             index = self.gamesComboBox.findData(game)
