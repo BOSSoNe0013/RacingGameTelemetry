@@ -125,8 +125,8 @@ class ArduiDash:
             Debug.notice("Serial communication was not opened")
 
     def read(self):
-        try:
-            while self.should_read:
+        while self.should_read:
+            try:
                 if self.serial.is_open:
                     data = self.serial.readline()
                     for c in data:
@@ -134,8 +134,8 @@ class ArduiDash:
                         Debug.log(cmd, "TTY Read")
                         if cmd in [1, 2, 4]:
                             self.change_mode(cmd)
-        except TypeError as e:
-            Debug.warn(e)
+            except TypeError as e:
+                Debug.warn(e)
 
     def change_mode(self, mode):
         self.mode = mode
