@@ -3117,6 +3117,6 @@
   <slot>show_preferences()</slot>
   <slot>show_track_scanner()</slot>
   <slot>show_car_scanner()</slot>
-  <slot>tap_on_main()</slot>
+  <slot>show_toolbars()</slot>
  </slots>
 </ui>

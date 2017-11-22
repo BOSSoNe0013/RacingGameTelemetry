@@ -39,7 +39,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.listener is not None:
             self.listener.show_car_scanner()
 
-    def tap_on_main(self):
+    def show_toolbars(self):
         if self.listener is not None:
             self.listener.show_toolbars()
 

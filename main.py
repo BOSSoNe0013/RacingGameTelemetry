@@ -105,7 +105,7 @@ class MainApp(MainWindow.Listener):
             if self.m_full_screen is True:
                 self.m_window.showFullScreen()
                 self.m_window.toolBar.hide()
-                self.m_window.menuBar.hide()
+                self.m_window.menubar.hide()
             else:
                 self.m_window.show()
             if DEBUG is True:
@@ -223,7 +223,7 @@ class MainApp(MainWindow.Listener):
         self.toggle_throttle_state(False)
 
     def show_toolbars(self):
-        self.m_window.menuBar.show()
+        self.m_window.menubar.show()
         self.m_window.toolBar.show()
 
     def update_ui(self, data):
