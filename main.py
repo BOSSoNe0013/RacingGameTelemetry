@@ -5,18 +5,29 @@ import sys
 
 from qtpy import QtWidgets, QtGui, QtCore
 
+from tools.serial_output import ArduiDash, start_data
 from tools.parser import Parser, ParserListener
 from tools.games import Games
 from tools.debug import Debug, LogLevel
 from tools.telemetry import Telemetry
 from ui.main_window import MainWindow
 from ui.preferences_window import PreferencesWindow
+from ui.scanner_window import ScannerWindow
+from ui.scanner_window import Types as scanTypes
 
 DEBUG = False
+GUI = True
 app = None
 
 argument_parser = argparse.ArgumentParser()
 argument_parser.add_argument('--debug', '-d', default=False, action='store_true')
+argument_parser.add_argument(
+    '--gui',
+    dest='gui',
+    action='store_true',
+    help='Display graphical user interface (default)')
+argument_parser.add_argument('--no-gui', dest='gui', action='store_false', help='Console mode')
+argument_parser.set_defaults(gui=True)
 argument_parser.add_argument(
     '--log_level',
     '-V',
@@ -29,6 +40,12 @@ if flags.debug:
     DEBUG = True
 if flags.log_level is not None:
     Debug.set_log_level(LogLevel(flags.log_level))
+if flags.gui is not None:
+    if flags.gui is False:
+        Debug.notice('No gui')
+        DEBUG = True
+        Debug.set_log_level(LogLevel(2))
+    GUI = flags.gui
 
 Debug.toggle(DEBUG)
 
@@ -53,13 +70,18 @@ class MainApp(MainWindow.Listener):
         self.m_parser = None
         self.m_window = None
         self.m_connected = False
-        self.m_autostart = False
+        self.m_auto_start = False
+        self.m_full_screen = False
         self.clutch_pedal_effect = None
         self.brake_pedal_effect = None
         self.throttle_pedal_effect = None
         self.m_udp_host = Parser.UDP_IP
         self.m_udp_port = Parser.UDP_PORT
         self.m_game = Games.DIRT_RALLY
+        self.ardui_dash = None
+        self.arduino_com_port = None
+        self.arduino_baud_rate = None
+        self.arduino_auto_start = False
 
         qt_app = QtWidgets.QApplication(sys.argv)
         qt_app.quitOnLastWindowClosed()
@@ -76,12 +98,24 @@ class MainApp(MainWindow.Listener):
 
         self.fill_games_menu()
         self.clear_ui()
-        self.m_window.show()
-        if DEBUG is True:
-            self.m_parser.enable_parser_debug(flags.log_level)
-        if self.m_autostart is True:
+
+        self.ardui_dash = ArduiDash()
+
+        if GUI is True:
+            if self.m_full_screen is True:
+                self.m_window.showFullScreen()
+            else:
+                self.m_window.show()
+            if DEBUG is True:
+                self.m_parser.enable_parser_debug(flags.log_level)
+                self.ardui_dash.enable_debug(flags.log_level)
+            if self.m_auto_start is True:
+                self.start()
+            sys.exit(qt_app.exec_())
+        else:
+            self.m_parser.enable_parser_debug(2)
+            self.ardui_dash.enable_debug(2)
             self.start()
-        sys.exit(qt_app.exec_())
 
     def create_pedal_effects(self):
         foreground = self.m_window.palette().windowText().color()
@@ -123,15 +157,18 @@ class MainApp(MainWindow.Listener):
     def start(self):
         if self.m_connected:
             return
+        if self.arduino_auto_start is True:
+            self.ardui_dash.start(self.arduino_com_port, self.arduino_baud_rate)
         Debug.notice('Start UDP socket')
         self.m_parser.open_socket()
 
     def stop(self):
-        if not self.m_connected:
-            return
-        Debug.notice('Closing UDP socket')
-        self.m_parser.close_socket()
+        if self.ardui_dash is not None:
+            self.ardui_dash.stop()
         self.clear_ui()
+        if self.m_connected:
+            Debug.notice('Closing UDP socket')
+            self.m_parser.close_socket()
 
     def on_close(self):
         Debug.notice('Main window closed')
@@ -168,6 +205,8 @@ class MainApp(MainWindow.Listener):
             self.clear_ui()
 
     def clear_ui(self):
+        if GUI is False:
+            return
         self.m_window.setWindowTitle('Racing Telemetry [%s]' % self.m_game['name'])
         self.m_window.progressBar.setStyleSheet(self.style_low)
         self.m_window.rpmChanged.emit(0)
@@ -182,6 +221,9 @@ class MainApp(MainWindow.Listener):
         self.toggle_throttle_state(False)
 
     def update_ui(self, data):
+        self.ardui_dash.telemetry_out(data)
+        if GUI is False:
+            return
         gear = "%d" % data['gear']
         if data['gear'] == Telemetry.GEAR_NEUTRAL:
             gear = "N"
@@ -224,6 +266,8 @@ class MainApp(MainWindow.Listener):
             self.m_window.action_Connect.setIcon(QtGui.QIcon.fromTheme("offline"))
             self.m_window.statusbar\
                 .showMessage("Listening for data on %s:%d " % (self.m_parser.UDP_IP, self.m_parser.UDP_PORT))
+            self.ardui_dash.setup(2)
+            self.ardui_dash.change_mode(1)
         else:
             Debug.notice("Socket closed")
             self.m_window.menu_action_connect.setText("&Connect")
@@ -246,7 +290,11 @@ class MainApp(MainWindow.Listener):
         self.m_game = self.m_settings.value('game', Games.DIRT_RALLY, dict)
         self.m_udp_host = self.m_settings.value('udp_host', Parser.UDP_IP, str)
         self.m_udp_port = self.m_settings.value('udp_port', Parser.UDP_PORT, int)
-        self.m_autostart = self.m_settings.value('autostart', False, bool)
+        self.m_auto_start = self.m_settings.value('autostart', False, bool)
+        self.m_full_screen = self.m_settings.value('fullscreen', False, bool)
+        self.arduino_com_port = self.m_settings.value('arduino_com_port', '/dev/ttyUSB0', str)
+        self.arduino_baud_rate = self.m_settings.value('arduino_baud_rate', 115200, int)
+        self.arduino_auto_start = self.m_settings.value('arduino_autostart', False, bool)
         self.m_parser = Parser(
             ParserListener(self.update_ui, self.update_connection_status),
             self.m_game,
@@ -255,12 +303,27 @@ class MainApp(MainWindow.Listener):
         )
         self.clear_ui()
 
+    def show_track_scanner(self):
+        self.stop()
+        scanner_window = ScannerWindow.init_from_ui(self.m_window)
+        scanner_window.setWindowTitle('Track Scanner')
+        scanner_window.show()
+        scanner_window.start_scanner()
+
+    def show_car_scanner(self):
+        self.stop()
+        scanner_window = ScannerWindow.init_from_ui(self.m_window, scanTypes.CARS)
+        scanner_window.setWindowTitle('Car Scanner')
+        scanner_window.show()
+        scanner_window.start_scanner()
+
 
 if __name__ == '__main__':
     Debug.notice('Starting application')
     signal.signal(signal.SIGINT, exit_gracefully)
     signal.signal(signal.SIGTERM, exit_gracefully)
     signal.signal(signal.SIGABRT, exit_gracefully)
+    signal.signal(signal.SIGTSTP, exit_gracefully)
     app = MainApp()
 
 

@@ -31,6 +31,14 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.listener is not None:
             self.listener.show_preferences()
 
+    def show_track_scanner(self):
+        if self.listener is not None:
+            self.listener.show_track_scanner()
+
+    def show_car_scanner(self):
+        if self.listener is not None:
+            self.listener.show_car_scanner()
+
     @staticmethod
     def init_from_ui(parent):
         ui_file = "ui/main_window.ui"

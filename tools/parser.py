@@ -46,6 +46,7 @@ class Parser(asyncore.dispatcher):
         self.track = None
         self.last_update = None
         self.log_level = LogLevel.error
+        self.thread = None
 
     @staticmethod
     def convert_time(time_s):
@@ -64,8 +65,8 @@ class Parser(asyncore.dispatcher):
         try:
             self.create_socket(socket.AF_INET, socket.SOCK_DGRAM)
             self.bind(self.address)
-            thread = threading.Thread(target=asyncore.loop, kwargs={'timeout': 1})
-            thread.start()
+            self.thread = threading.Thread(target=asyncore.loop, kwargs={'timeout': 1})
+            self.thread.start()
             if self.listener.connection_callback:
                 self.listener.connection_callback(True)
             Debug.notice("Waiting for data on %s:%s" % self.address)
@@ -74,6 +75,9 @@ class Parser(asyncore.dispatcher):
             self.close_socket()
 
     def close_socket(self):
+        if self.thread is not None:
+            Debug.notice('Stopping parser thread')
+            asyncore.dispatcher.close(self)
         self.close()
         if self.listener.connection_callback:
             self.listener.connection_callback(False)
@@ -159,6 +163,12 @@ class Parser(asyncore.dispatcher):
         elif len(res) > 1:
             self.car = None
             for (index, name) in res:
+                if self.track is None:
+                    self.car = {
+                        'id': index,
+                        'name': name,
+                    }
+                    break
                 if self.track['id'] >= 1000 and index >= 1000:
                     self.car = {
                         'id': index,

@@ -2888,7 +2888,7 @@
      <x>0</x>
      <y>0</y>
      <width>833</width>
-     <height>27</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_file">
@@ -2901,18 +2901,26 @@
    </widget>
    <widget class="QMenu" name="menu_settings">
     <property name="title">
-     <string>&amp;Settings</string>
+     <string>Settin&amp;gs</string>
     </property>
     <addaction name="menu_action_Preferences"/>
    </widget>
    <widget class="QMenu" name="menu_help">
     <property name="title">
-     <string>&amp;help</string>
+     <string>&amp;Help</string>
     </property>
     <addaction name="action_About_Racing_Telemetry"/>
    </widget>
+   <widget class="QMenu" name="menu_Tools">
+    <property name="title">
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="actionT_rack_scanner"/>
+    <addaction name="actionC_ar_scanner"/>
+   </widget>
    <addaction name="menu_file"/>
    <addaction name="menu_settings"/>
+   <addaction name="menu_Tools"/>
    <addaction name="menu_help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -2980,6 +2988,16 @@
   <action name="action_Game">
    <property name="text">
     <string>&amp;Game</string>
+   </property>
+  </action>
+  <action name="actionT_rack_scanner">
+   <property name="text">
+    <string>T&amp;rack scanner</string>
+   </property>
+  </action>
+  <action name="actionC_ar_scanner">
+   <property name="text">
+    <string>C&amp;ar scanner</string>
    </property>
   </action>
  </widget>
@@ -3051,10 +3069,44 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionT_rack_scanner</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>show_track_scanner()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>416</x>
+     <y>346</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionC_ar_scanner</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>show_car_scanner()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>416</x>
+     <y>346</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>rpmChanged(int)</signal>
   <slot>toggle_connection()</slot>
   <slot>show_preferences()</slot>
+  <slot>show_track_scanner()</slot>
+  <slot>show_car_scanner()</slot>
  </slots>
 </ui>
