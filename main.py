@@ -278,7 +278,10 @@ class MainApp(MainWindow.Listener):
 
     def show_preferences(self):
         preferences_window = PreferencesWindow.init_from_ui(self.m_window)
-        current_game = self.m_settings.value('game', Games.DIRT_RALLY, dict)
+        try:
+            current_game = self.m_settings.value('game', Games.DIRT_RALLY, dict)
+        except TypeError:
+            current_game = Games.DIRT_RALLY
         preferences_window.fill_games_list(Games(), current_game)
         preferences_window.finished.connect(self.load_preferences)
         preferences_window.show()
