@@ -475,6 +475,9 @@
      <height>0</height>
     </size>
    </property>
+   <property name="mouseTracking">
+    <bool>true</bool>
+   </property>
    <layout class="QGridLayout" name="gridLayout_5">
     <property name="leftMargin">
      <number>16</number>
@@ -2891,6 +2894,9 @@
      <height>22</height>
     </rect>
    </property>
+   <property name="nativeMenuBar">
+    <bool>true</bool>
+   </property>
    <widget class="QMenu" name="menu_file">
     <property name="title">
      <string>&amp;File</string>
@@ -2925,6 +2931,9 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
@@ -3081,7 +3090,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>416</x>
-     <y>346</y>
+     <y>319</y>
     </hint>
    </hints>
   </connection>
@@ -3097,7 +3106,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>416</x>
-     <y>346</y>
+     <y>319</y>
     </hint>
    </hints>
   </connection>
@@ -3108,5 +3117,6 @@
   <slot>show_preferences()</slot>
   <slot>show_track_scanner()</slot>
   <slot>show_car_scanner()</slot>
+  <slot>tap_on_main()</slot>
  </slots>
 </ui>

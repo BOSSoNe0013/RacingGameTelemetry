@@ -39,6 +39,14 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.listener is not None:
             self.listener.show_car_scanner()
 
+    def tap_on_main(self):
+        if self.listener is not None:
+            self.listener.show_toolbars()
+
+    def mouseMoveEvent(self, *args, **kwargs):
+        if self.listener is not None:
+            self.listener.show_toolbars()
+
     @staticmethod
     def init_from_ui(parent):
         ui_file = "ui/main_window.ui"
