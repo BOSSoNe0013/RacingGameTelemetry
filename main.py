@@ -2,6 +2,7 @@
 import argparse
 import signal
 import sys
+from threading import Timer
 
 from qtpy import QtWidgets, QtGui, QtCore
 
@@ -104,8 +105,7 @@ class MainApp(MainWindow.Listener):
         if GUI is True:
             if self.m_full_screen is True:
                 self.m_window.showFullScreen()
-                self.m_window.toolBar.hide()
-                self.m_window.menubar.hide()
+                self.hide_toolbars()
             else:
                 self.m_window.show()
             if DEBUG is True:
@@ -224,7 +224,13 @@ class MainApp(MainWindow.Listener):
 
     def show_toolbars(self):
         self.m_window.menubar.show()
-        self.m_window.toolBar.show()
+        # self.m_window.toolBar.show()
+        t = Timer(2.0, self.hide_toolbars)
+        t.start()
+
+    def hide_toolbars(self):
+        self.m_window.menubar.hide()
+        self.m_window.toolBar.hide()
 
     def update_ui(self, data):
         self.ardui_dash.telemetry_out(data)
