@@ -127,13 +127,13 @@ class ArduiDash:
     def read(self):
         while self.should_read:
             try:
-                # if self.serial.is_open:
-                data = self.serial.readline()
-                for c in data:
-                    cmd = int(c)
-                    Debug.log(cmd, "TTY Read")
-                    if cmd in [1, 2, 4]:
-                        self.change_mode(cmd)
+                if self.serial.is_open:
+                    data = self.serial.readline()
+                    for c in data:
+                        cmd = int(c)
+                        Debug.log(cmd, "TTY Read")
+                        if cmd in [1, 2, 4]:
+                            self.change_mode(cmd)
             except TypeError as e:
                 Debug.warn(e)
 
