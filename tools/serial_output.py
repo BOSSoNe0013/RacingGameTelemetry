@@ -105,9 +105,8 @@ class ArduiDash:
         Debug.notice('ArduiDash debug mode set to %s' % self.log_level.name)
 
     def start(self, port, baud_rate):
+        self.stop()
         self.should_read = True
-        if self.serial.is_open:
-            self.serial.close()
         self.serial.baudrate = baud_rate
         self.serial.port = port
         self.serial.timeout = 1
