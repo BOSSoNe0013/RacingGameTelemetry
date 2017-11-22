@@ -104,6 +104,7 @@ class MainApp(MainWindow.Listener):
         if GUI is True:
             if self.m_full_screen is True:
                 self.m_window.showFullScreen()
+                self.m_window.toolBar.hide()
             else:
                 self.m_window.show()
             if DEBUG is True:
