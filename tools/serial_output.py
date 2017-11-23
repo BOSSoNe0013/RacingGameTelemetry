@@ -95,7 +95,7 @@ class ArduiDash:
         self.serial = serial.Serial()
         self.should_read = True
         self.log_level = LogLevel.error
-        self.mode = 3
+        self.mode = 49
         self.previous_cmd = ''
 
     def enable_debug(self, log_level=LogLevel.verbose):
@@ -130,10 +130,10 @@ class ArduiDash:
                 if self.serial.is_open:
                     data = self.serial.readline()
                     for c in data:
-                        cmd = int(c)
-                        Debug.log(cmd, "TTY Read")
-                        if cmd in [49, 50, 52]:
-                            self.change_mode(cmd)
+                        mode = int(c)
+                        Debug.log(mode, "TTY Read")
+                        if mode in [49, 50, 52]:
+                            self.change_mode(mode)
             except TypeError as e:
                 Debug.warn(e)
 
