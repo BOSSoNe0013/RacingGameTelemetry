@@ -242,7 +242,7 @@ class MainApp(MainWindow.Listener):
             return
         if self.last_ui_update is not None:
             now = datetime.datetime.now()
-            time_diff = (now - self.last_ui_update) * 1000
+            time_diff = (now - self.last_ui_update).total_seconds() * 1000
             if time_diff <= 500:
                 return
         gear = "%d" % data['gear']
