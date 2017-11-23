@@ -143,7 +143,7 @@ class ArduiDash:
             self.print("SP  GR  ")
         elif mode == 50:
             self.print("LP  TL  ")
-        elif mode == 524:
+        elif mode == 52:
             self.print("LP  TIME")
         time.sleep(1)
         self.telemetry_out(start_data)
