@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import argparse
+import datetime
 import signal
 import sys
 from threading import Timer
@@ -83,6 +84,7 @@ class MainApp(MainWindow.Listener):
         self.arduino_com_port = None
         self.arduino_baud_rate = None
         self.arduino_auto_start = False
+        self.last_ui_update = None
 
         qt_app = QtWidgets.QApplication(sys.argv)
         qt_app.quitOnLastWindowClosed()
@@ -238,6 +240,11 @@ class MainApp(MainWindow.Listener):
         self.ardui_dash.telemetry_out(data)
         if GUI is False:
             return
+        if self.last_ui_update is not None:
+            now = datetime.datetime.now()
+            time_diff = (now - self.last_ui_update) * 1000
+            if time_diff <= 500:
+                return
         gear = "%d" % data['gear']
         if data['gear'] == Telemetry.GEAR_NEUTRAL:
             gear = "N"
@@ -268,6 +275,7 @@ class MainApp(MainWindow.Listener):
             style = self.style_safe
         self.m_window.progressBar.setStyleSheet(style)
         self.m_window.rpmChanged.emit(rpm_percent)
+        self.last_ui_update = datetime.datetime.now()
 
     def update_connection_status(self, status):
         self.m_connected = status
