@@ -159,11 +159,11 @@ class ArduiDash:
         self.send(cmd.encode("utf-8"))
 
     def telemetry_out(self, data):
-        if self.mode == 1:
+        if self.mode == 49:
             self.send_speed_and_gear(data)
-        elif self.mode == 2:
+        elif self.mode == 50:
             self.send_lap_data(data)
-        elif self.mode == 4:
+        elif self.mode == 52:
             self.send_lap_time(data)
 
     def send_lap_time(self, data):
