@@ -223,6 +223,7 @@ class MainApp(MainWindow.Listener):
         self.toggle_throttle_state(False)
 
     def show_toolbars(self):
+        self.m_window.setCursor(QtCore.Qt.ArrowCursor)
         self.m_window.menubar.show()
         # self.m_window.toolBar.show()
         t = Timer(2.0, self.hide_toolbars)
@@ -231,6 +232,7 @@ class MainApp(MainWindow.Listener):
     def hide_toolbars(self):
         self.m_window.menubar.hide()
         self.m_window.toolBar.hide()
+        self.m_window.setCursor(QtCore.Qt.BlankCursor)
 
     def update_ui(self, data):
         self.ardui_dash.telemetry_out(data)
