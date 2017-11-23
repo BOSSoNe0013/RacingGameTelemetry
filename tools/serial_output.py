@@ -132,18 +132,18 @@ class ArduiDash:
                     for c in data:
                         cmd = int(c)
                         Debug.log(cmd, "TTY Read")
-                        if cmd in [1, 2, 4]:
+                        if cmd in [49, 50, 52]:
                             self.change_mode(cmd)
             except TypeError as e:
                 Debug.warn(e)
 
     def change_mode(self, mode):
         self.mode = mode
-        if mode == 1:
+        if mode == 49:
             self.print("SP  GR  ")
-        elif mode == 2:
+        elif mode == 50:
             self.print("LP  TL  ")
-        elif mode == 4:
+        elif mode == 524:
             self.print("LP  TIME")
         time.sleep(1)
         self.telemetry_out(start_data)
@@ -231,6 +231,16 @@ class ArduiDash:
                 cmd += "G"
             i += 1
         self.send(cmd.encode("utf-8"))
+
+    def send_data(self, data):
+        try:
+            if self.serial.is_open:
+                self.serial.write(0x03)
+                self.serial.write(b'1')
+                self.serial.write(data)
+                self.serial.write(b'\n')
+        except TypeError as e:
+            Debug.warn(e)
 
     def send(self, cmd):
         try:
