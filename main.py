@@ -243,7 +243,7 @@ class MainApp(MainWindow.Listener):
         if self.last_ui_update is not None:
             now = datetime.datetime.now()
             time_diff = (now - self.last_ui_update).total_seconds() * 1000
-            if time_diff <= 500:
+            if time_diff <= 250:
                 return
         gear = "%d" % data['gear']
         if data['gear'] == Telemetry.GEAR_NEUTRAL:
