@@ -2323,7 +2323,7 @@
              <enum>QFrame::StyledPanel</enum>
             </property>
             <property name="frameShadow">
-             <enum>QFrame::Sunken</enum>
+             <enum>QFrame::Plain</enum>
             </property>
             <property name="text">
              <string>0</string>
@@ -2825,6 +2825,12 @@
               <height>112</height>
              </size>
             </property>
+            <property name="baseSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="font">
              <font>
               <family>Zero Threes</family>
@@ -2835,13 +2841,13 @@
              <enum>QFrame::StyledPanel</enum>
             </property>
             <property name="frameShadow">
-             <enum>QFrame::Sunken</enum>
+             <enum>QFrame::Plain</enum>
             </property>
             <property name="text">
              <string>0</string>
             </property>
             <property name="scaledContents">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="alignment">
              <set>Qt::AlignBottom|Qt::AlignHCenter</set>
