@@ -7,7 +7,7 @@ from threading import Timer
 
 from qtpy import QtWidgets, QtGui, QtCore
 
-from tools.serial_output import ArduiDash, start_data
+from tools.serial_output import ArduiDash
 from tools.parser import Parser, ParserListener
 from tools.games import Games
 from tools.debug import Debug, LogLevel
@@ -227,12 +227,14 @@ class MainApp(MainWindow.Listener):
     def show_toolbars(self):
         self.m_window.setCursor(QtCore.Qt.ArrowCursor)
         self.m_window.menubar.show()
+        self.m_window.statusbar.show()
         # self.m_window.toolBar.show()
         t = Timer(2.0, self.hide_toolbars)
         t.start()
 
     def hide_toolbars(self):
         self.m_window.menubar.hide()
+        self.m_window.statusbar.hide()
         self.m_window.toolBar.hide()
         self.m_window.setCursor(QtCore.Qt.BlankCursor)
 

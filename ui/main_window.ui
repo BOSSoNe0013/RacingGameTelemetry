@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
-    <height>320</height>
+    <width>669</width>
+    <height>541</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -537,7 +537,7 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>14</pointsize>
+            <pointsize>12</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -563,7 +563,7 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>14</pointsize>
+            <pointsize>12</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -815,7 +815,7 @@
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>10</height>
+          <height>5</height>
          </size>
         </property>
        </spacer>
@@ -839,7 +839,7 @@
          <widget class="QLabel" name="car_label">
           <property name="font">
            <font>
-            <pointsize>14</pointsize>
+            <pointsize>12</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -869,7 +869,7 @@
          <widget class="QLabel" name="car_view">
           <property name="font">
            <font>
-            <pointsize>14</pointsize>
+            <pointsize>12</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -1799,7 +1799,7 @@
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>10</height>
+              <height>5</height>
              </size>
             </property>
            </spacer>
@@ -1819,15 +1819,18 @@
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>20</height>
+          <height>5</height>
          </size>
         </property>
        </spacer>
       </item>
       <item>
        <layout class="QHBoxLayout" name="gear_speed_layout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
+        </property>
         <item>
-         <layout class="QGridLayout" name="gridLayout">
+         <layout class="QGridLayout" name="gridLayout" rowminimumheight="0,90">
           <property name="verticalSpacing">
            <number>0</number>
           </property>
@@ -2293,15 +2296,27 @@
           <item row="1" column="0">
            <widget class="QLabel" name="gear_view">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>112</height>
+             </size>
+            </property>
+            <property name="sizeIncrement">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="font">
              <font>
               <family>Zeroes Three</family>
-              <pointsize>160</pointsize>
+              <pointsize>80</pointsize>
              </font>
             </property>
             <property name="frameShape">
@@ -2313,8 +2328,14 @@
             <property name="text">
              <string>0</string>
             </property>
+            <property name="textFormat">
+             <enum>Qt::PlainText</enum>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
             <property name="alignment">
-             <set>Qt::AlignCenter</set>
+             <set>Qt::AlignBottom|Qt::AlignHCenter</set>
             </property>
             <property name="margin">
              <number>10</number>
@@ -2324,7 +2345,7 @@
          </layout>
         </item>
         <item>
-         <layout class="QGridLayout" name="gridLayout_2">
+         <layout class="QGridLayout" name="gridLayout_2" rowminimumheight="0,90">
           <property name="verticalSpacing">
            <number>0</number>
           </property>
@@ -2789,10 +2810,25 @@
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="speed_view">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>112</height>
+             </size>
+            </property>
             <property name="font">
              <font>
               <family>Zero Threes</family>
-              <pointsize>160</pointsize>
+              <pointsize>80</pointsize>
              </font>
             </property>
             <property name="frameShape">
@@ -2804,8 +2840,11 @@
             <property name="text">
              <string>0</string>
             </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
             <property name="alignment">
-             <set>Qt::AlignCenter</set>
+             <set>Qt::AlignBottom|Qt::AlignHCenter</set>
             </property>
            </widget>
           </item>
@@ -2824,13 +2863,16 @@
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>20</height>
+          <height>5</height>
          </size>
         </property>
        </spacer>
       </item>
       <item>
-       <layout class="QGridLayout" name="gridLayout_4">
+       <layout class="QGridLayout" name="pedals_layout" rowminimumheight="0">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
+        </property>
         <item row="0" column="0">
          <widget class="QLabel" name="clutch_label">
           <property name="text">
@@ -2838,6 +2880,9 @@
           </property>
           <property name="pixmap">
            <pixmap resource="../res/resources.qrc">:/images/images/clutch.png</pixmap>
+          </property>
+          <property name="scaledContents">
+           <bool>false</bool>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2890,7 +2935,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>480</width>
+     <width>669</width>
      <height>22</height>
     </rect>
    </property>
