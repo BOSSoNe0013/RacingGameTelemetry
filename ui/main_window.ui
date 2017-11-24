@@ -486,12 +486,12 @@
      <number>16</number>
     </property>
     <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QVBoxLayout" name="main_layout">
       <property name="sizeConstraint">
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
       <item>
-       <spacer name="verticalSpacer_4">
+       <spacer name="vs5">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -509,7 +509,7 @@
       <item>
        <layout class="QHBoxLayout" name="track_layout">
         <item>
-         <spacer name="horizontalSpacer_4">
+         <spacer name="hs1">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -574,7 +574,7 @@
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_6">
+         <spacer name="hs3">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -590,7 +590,7 @@
          </spacer>
         </item>
         <item>
-         <spacer name="horizontalSpacer_5">
+         <spacer name="hs2">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -607,7 +607,7 @@
       <item>
        <layout class="QHBoxLayout" name="length_distance_layout">
         <item>
-         <spacer name="horizontalSpacer_2">
+         <spacer name="hs5">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -620,7 +620,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="label_5">
+         <widget class="QLabel" name="track_length_label">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -671,7 +671,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_6">
+         <widget class="QLabel" name="track_length_unit_label">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -697,7 +697,7 @@
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer">
+         <spacer name="hs4">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -713,7 +713,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="label_4">
+         <widget class="QLabel" name="diastance_label">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
             <horstretch>0</horstretch>
@@ -764,7 +764,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_7">
+         <widget class="QLabel" name="distance_unit_label">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -790,7 +790,7 @@
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_3">
+         <spacer name="hs6">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -805,7 +805,7 @@
        </layout>
       </item>
       <item>
-       <spacer name="verticalSpacer_2">
+       <spacer name="vs3">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -823,7 +823,7 @@
       <item>
        <layout class="QHBoxLayout" name="car_layout">
         <item>
-         <spacer name="horizontalSpacer_7">
+         <spacer name="hs7">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -850,7 +850,7 @@
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_8">
+         <spacer name="hs8">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -880,7 +880,7 @@
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_9">
+         <spacer name="hs9">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -1789,7 +1789,7 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <spacer name="verticalSpacer_5">
+           <spacer name="vs1">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
@@ -1809,7 +1809,7 @@
        </layout>
       </item>
       <item>
-       <spacer name="verticalSpacer">
+       <spacer name="vs2">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -1830,12 +1830,12 @@
          <enum>QLayout::SetDefaultConstraint</enum>
         </property>
         <item>
-         <layout class="QGridLayout" name="gridLayout" rowminimumheight="0,90">
+         <layout class="QGridLayout" name="gear_layout" rowminimumheight="0,0">
           <property name="verticalSpacing">
            <number>0</number>
           </property>
           <item row="0" column="0">
-           <widget class="QLabel" name="label">
+           <widget class="QLabel" name="gear_label">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -2345,12 +2345,12 @@
          </layout>
         </item>
         <item>
-         <layout class="QGridLayout" name="gridLayout_2" rowminimumheight="0,90">
+         <layout class="QGridLayout" name="speed_layout" rowminimumheight="0,0">
           <property name="verticalSpacing">
            <number>0</number>
           </property>
           <item row="0" column="0">
-           <widget class="QLabel" name="label_2">
+           <widget class="QLabel" name="speed_label">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -2859,7 +2859,7 @@
        </layout>
       </item>
       <item>
-       <spacer name="verticalSpacer_3">
+       <spacer name="vs4">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
