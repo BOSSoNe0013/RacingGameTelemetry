@@ -44,6 +44,7 @@ class Telemetry:
     MAX_RPM = 63
     IDLE_RPM = 64
     MAX_GEARS = 65
+    TRACK_ID = 68
 
     MPS_KMH_RATE = 3.59999999712
 

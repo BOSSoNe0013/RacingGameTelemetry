@@ -103,6 +103,32 @@ class Parser(asyncore.dispatcher):
         Debug.warn('An error occurred! Closing socket.')
         self.close_socket()
 
+    def find_track(self, track_id):
+        # print('Find track', track_id)
+        if self.game['db_file'] is None:
+            return
+        try:
+            app_root = os.path.dirname(os.path.realpath(__file__))
+            conn = sqlite3.connect(app_root + '/../data/' + self.game['db_file'])
+            db = conn.cursor()
+        except sqlite3.Error as e:
+            Debug.err("Database connection error")
+            Debug.err(e)
+            return
+        db.execute('SELECT id,name, start_z FROM Tracks WHERE id = ?', (track_id,))
+        res = db.fetchall()
+        if len(res) == 1:
+            (index, name, start_z) = res[0]
+            self.track = {
+                'id': index,
+                'name': name,
+                'start_z': start_z
+            }
+        else:
+            self.track = None
+        db.close()
+        conn.close()
+
     def find_track(self, track_length, z_pos):
         # print('Find track', track_length, z_pos)
         if self.game['db_file'] is None:
@@ -217,10 +243,17 @@ class Parser(asyncore.dispatcher):
         lap_time = self.convert_time(stats[Telemetry.LAP_TIME])
         idle_rpm = int(stats[Telemetry.IDLE_RPM] * 10)
         max_gears = int(stats[Telemetry.MAX_GEARS])
+        if len(stats) > Telemetry.TRACK_ID:
+            track_id = int(stats[Telemetry.TRACK_ID]) + 1
+        else:
+            track_id = None
 
         if stats[Telemetry.TIME] < 0.5:
             if self.track is None:
-                self.find_track(stats[Telemetry.TRACK_LENGTH], stats[Telemetry.Z_POSITION])
+                if track_id is None:
+                    self.find_track(stats[Telemetry.TRACK_LENGTH], stats[Telemetry.Z_POSITION])
+                else:
+                    self.find_track(track_id)
             if self.car is None:
                 self.find_car(stats[Telemetry.IDLE_RPM], stats[Telemetry.MAX_RPM], max_gears)
 
@@ -243,6 +276,7 @@ class Parser(asyncore.dispatcher):
             'max_rpm': max_rpm,
             'idle_rpm': idle_rpm,
             'car': self.car,
+            'track_id': track_id,
             'track': self.track
         }
 
@@ -272,4 +306,5 @@ class Parser(asyncore.dispatcher):
         Debug.log(data['rpm'], "RPM")
         Debug.log(data['max_rpm'], "Max RPM")
         Debug.log(data['car'], "Car")
+        Debug.log(data['track_id'], "Track ID")
         Debug.log(data['track'], "Track")

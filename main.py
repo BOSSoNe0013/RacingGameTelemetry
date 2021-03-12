@@ -250,10 +250,18 @@ class MainApp(MainWindow.Listener):
             if time_diff <= 250:
                 return
         gear = "%d" % data['gear']
-        if data['gear'] == Telemetry.GEAR_NEUTRAL:
-            gear = "N"
-        elif data['gear'] == Telemetry.GEAR_REVERSE:
-            gear = "R"
+        if self.m_game in [Games.F1_2015, Games.F1_2016, Games.F1_2017, Games.F1_2018]:
+            if data['gear'] == 0:
+                gear == "R"
+            elif data['gear'] == 1:
+                gear = "N"
+            else:
+                gear = "%d" % (data['gear'] - 1)
+        else:
+            if data['gear'] == Telemetry.GEAR_NEUTRAL:
+                gear = "N"
+            elif data['gear'] == Telemetry.GEAR_REVERSE:
+                gear = "R"
         self.m_window.gear_view.setText(gear)
         self.toggle_brake_state(data['brake'] > 0.0)
         self.toggle_clutch_state(data['clutch'] > 0.0)
