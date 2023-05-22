@@ -7,6 +7,7 @@ import threading
 from datetime import datetime
 
 from .telemetry import Telemetry
+from .games import Games
 from .debug import Debug, LogLevel
 
 
@@ -258,6 +259,7 @@ class Parser(asyncore.dispatcher):
                 self.find_car(stats[Telemetry.IDLE_RPM], stats[Telemetry.MAX_RPM], max_gears)
 
         output = {
+            'game': self.game,
             'time': race_time,
             'lap_time': lap_time,
             'distance': distance,
@@ -290,10 +292,12 @@ class Parser(asyncore.dispatcher):
     @staticmethod
     def console_output(data):
         os.system('clear')
+        Debug.log(data['game']['name'])
         Debug.log("%d:%d:%d" % (data['time'][0], data['time'][1], data['time'][2]), "Time")
         Debug.log("%.2f km" % data['distance'], "Distance")
         Debug.log("%.2f km" % data['track_length'], "Track length")
-        Debug.log(data['gear'], "Gear ")
+        gear = Parser.parse_gear(data['gear'], data['game'])
+        Debug.log(gear, "Gear ")
         Debug.log(data['throttle'], "Throttle")
         Debug.log(data['steer'], "Steer")
         Debug.log(data['brake'], "Brake")
@@ -308,3 +312,25 @@ class Parser(asyncore.dispatcher):
         Debug.log(data['car'], "Car")
         Debug.log(data['track_id'], "Track ID")
         Debug.log(data['track'], "Track")
+
+    @staticmethod
+    def parse_gear(raw_gear, game):
+        gear = "%d" % raw_gear
+        if game in [Games.F1_2015, Games.F1_2016, Games.F1_2017, Games.F1_2018]:
+            if raw_gear == 0:
+                gear = "R"
+            elif raw_gear == 1:
+                gear = "N"
+            else:
+                gear = "%d" % (raw_gear - 1)
+        elif game in [Games.DIRT_RALLY_2]:
+            if raw_gear == -1:
+                gear = "R"
+            elif raw_gear == Telemetry.GEAR_NEUTRAL:
+                gear = "N"
+        else:
+            if raw_gear == Telemetry.GEAR_NEUTRAL:
+                gear = "N"
+            elif raw_gear == Telemetry.GEAR_REVERSE:
+                gear = "R"
+        return gear

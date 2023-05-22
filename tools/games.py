@@ -29,7 +29,7 @@ class Games(object):
         'db_file': 'f1_2017.db'
     }
     F1_2018 = {
-        'name': 'F1 2017',
+        'name': 'F1 2018',
         'db_file': None
     }
     GRID_AUTOSPORT = {

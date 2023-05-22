@@ -41,12 +41,13 @@ flags = argument_parser.parse_args()
 if flags.debug:
     DEBUG = True
 if flags.log_level is not None:
+    DEBUG = True
     Debug.set_log_level(LogLevel(flags.log_level))
 if flags.gui is not None:
     if flags.gui is False:
-        Debug.notice('No gui')
         DEBUG = True
         Debug.set_log_level(LogLevel(2))
+        Debug.notice('No gui')
     GUI = flags.gui
 
 Debug.toggle(DEBUG)
@@ -249,19 +250,7 @@ class MainApp(MainWindow.Listener):
             time_diff = (now - self.last_ui_update).total_seconds() * 1000
             if time_diff <= 250:
                 return
-        gear = "%d" % data['gear']
-        if self.m_game in [Games.F1_2015, Games.F1_2016, Games.F1_2017, Games.F1_2018]:
-            if data['gear'] == 0:
-                gear == "R"
-            elif data['gear'] == 1:
-                gear = "N"
-            else:
-                gear = "%d" % (data['gear'] - 1)
-        else:
-            if data['gear'] == Telemetry.GEAR_NEUTRAL:
-                gear = "N"
-            elif data['gear'] == Telemetry.GEAR_REVERSE:
-                gear = "R"
+        gear = Parser.parse_gear(data['gear'], self.m_game)
         self.m_window.gear_view.setText(gear)
         self.toggle_brake_state(data['brake'] > 0.0)
         self.toggle_clutch_state(data['clutch'] > 0.0)
